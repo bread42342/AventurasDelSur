@@ -1,0 +1,9 @@
+{% extends 'baseLogin.html' %}
+{% block titulo %}No encontrado{% endblock %}
+{% block contenido %}
+<div class="text-center">
+    <div class="display-3 text-primary font-weight-bold">404</div>
+    <p class="lead text-gray-800">La página que buscas no existe.</p>
+    <a href="{% url 'inicio' %}" class="btn btn-primary">Volver al inicio</a>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block titulo %}Eliminar experiencia{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">Eliminar experiencia</h1>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <p>¿Seguro que deseas eliminar <strong>{{ object.titulo }}</strong>? Se eliminarán también sus reservas.</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="{% url 'experiencia_lista' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

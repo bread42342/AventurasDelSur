@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block titulo %}Calendario de actividades{% endblock %}
+{% block contenido %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Calendario de actividades</h1>
+    <div>
+        <a href="?mes={{ anterior }}" class="btn btn-outline-primary btn-sm">&laquo; Anterior</a>
+        <span class="mx-2 font-weight-bold text-gray-800">{{ titulo }}</span>
+        <a href="?mes={{ siguiente }}" class="btn btn-outline-primary btn-sm">&laquo; Anterior</a>
+    </div>
+</div>
+<p class="small mb-2">
+    <span class="badge badge-primary">Programada</span>
+    <span class="badge badge-success">En curso</span>
+    <span class="badge badge-secondary">Finalizada</span>
+    <span class="badge badge-danger">Suspendida</span>
+</p>
+<div class="card shadow mb-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-bordered mb-0 text-center" style="table-layout: fixed;">
+                <thead class="thead-light"><tr>{% for d in dias_semana %}<th>{{ d }}</th>{% endfor %}</tr></thead>
+                <tbody>
+                {% for semana in semanas %}
+                    <tr>
+                    {% for dia in semana %}
+                        <td class="text-left align-top p-1 {% if not dia.en_mes %}bg-light text-gray-500{% endif %}" style="height: 110px;">
+                            <div class="small font-weight-bold {% if dia.hoy %}text-white bg-primary rounded px-1 d-inline-block{% endif %}">{{ dia.fecha.day }}</div>
+                            {% for e in dia.experiencias %}
+                                <a href="{% url 'grupo_detalle' e.pk %}" class="badge badge-{% if e.estado == 'finalizada' %}secondary{% elif e.estado == 'suspendida' %}danger{% elif e.estado == 'en_curso' %}success{% else %}primary{% endif %} d-block text-left text-wrap mb-1" style="white-space: normal;">
+                                    {{ e.fecha_hora|date:"H:i" }} {{ e.titulo }}
+                                    <span class="d-block font-weight-normal">{{ e.get_estado_display }}</span>
+                                </a>
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

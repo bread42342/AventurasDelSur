@@ -1,0 +1,28 @@
+AVENTURAS DEL SUR - CREDENCIALES DE PRUEBA
+
+Direccion: http://127.0.0.1:8000/
+
+Rol                 Usuario        Contrasena
+Administrador       admin          Eva3
+Guia / Operador     trabajador1    Eva3
+Guia / Operador     trabajador2    Eva3
+Turista / Cliente   cliente1       Eva3
+Turista / Cliente   cliente2       Eva3
+superadmin  /       admineva       1234
+      
+Conexion MySQL
+Base: aventurasbd
+Usuario: adminaventura
+Contrasena: 2026
+
+Base de datos
+1. Ejecutar: python manage.py migrate
+2. Importar base_de_datos.sql en MySQL Workbench (File > Open SQL Script > Ejecutar)
+   El archivo carga los datos de prueba sobre las tablas creadas por migrate.
+3. Ejecutar: python manage.py runserver
+
+Requerimientos del Venv
+python -m venv venv
+venv\Scripts\activate
+pip install "django==5.2.*" pymysql
+python manage.py migrate

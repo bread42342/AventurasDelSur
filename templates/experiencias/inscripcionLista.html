@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block titulo %}Reservas{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">{% if user.rol == 'admin' %}Reservas{% else %}Inscritos en mis experiencias{% endif %}</h1>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered datatable" width="100%">
+                <thead><tr><th>Turista</th><th>Experiencia</th><th>Cupos</th><th>Fecha inscripción</th><th>Estado de pago</th>{% if user.rol == 'admin' %}<th>Acciones</th>{% endif %}</tr></thead>
+                <tbody>
+                {% for i in inscripciones %}
+                    <tr>
+                        <td>{{ i.usuario.get_full_name|default:i.usuario.username }}</td>
+                        <td>{{ i.experiencia.titulo }}</td>
+                        <td>{{ i.cantidad }}</td>
+                        <td>{{ i.fecha_inscripcion|date:"d/m/Y H:i" }}</td>
+                        <td><span class="badge badge-{% if i.estado_pago == 'confirmado' %}success{% else %}warning{% endif %}">{{ i.get_estado_pago_display }}</span></td>
+                        {% if user.rol == 'admin' %}
+                        <td>
+                            <a href="{% url 'inscripcion_actualizar' i.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{% url 'inscripcion_borrar' i.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

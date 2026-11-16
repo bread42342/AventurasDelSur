@@ -1,0 +1,60 @@
+{% with actual=request.resolver_match.url_name %}
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'panel' %}">
+        <div class="sidebar-brand-text mx-3">Aventuras del Sur</div>
+    </a>
+    <hr class="sidebar-divider my-0">
+    <li class="nav-item {% if actual == 'panel' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'panel' %}"><span>Panel</span></a>
+    </li>
+    <hr class="sidebar-divider">
+    {% if user.rol == 'admin' %}
+        <div class="sidebar-heading">Administración</div>
+        <li class="nav-item {% if 'usuario' in actual %}active{% endif %}">
+            <a class="nav-link" href="{% url 'usuario_lista' %}"><span>Usuarios</span></a>
+        </li>
+        <li class="nav-item {% if actual == 'guia_lista' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'guia_lista' %}"><span>Guías</span></a>
+        </li>
+        <li class="nav-item {% if 'categoria' in actual %}active{% endif %}">
+            <a class="nav-link" href="{% url 'categoria_lista' %}"><span>Categorías</span></a>
+        </li>
+        <li class="nav-item {% if 'experiencia' in actual %}active{% endif %}">
+            <a class="nav-link" href="{% url 'experiencia_lista' %}"><span>Experiencias</span></a>
+        </li>
+        <li class="nav-item {% if 'inscripcion' in actual %}active{% endif %}">
+            <a class="nav-link" href="{% url 'inscripcion_lista' %}"><span>Reservas</span></a>
+        </li>
+        <li class="nav-item {% if actual == 'configuracion' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'configuracion' %}"><span>Configuración</span></a>
+        </li>
+        <li class="nav-item {% if actual == 'reportes' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'reportes' %}"><span>Reportes</span></a>
+        </li>
+    {% elif user.rol == 'guia' %}
+        <div class="sidebar-heading">Mi trabajo</div>
+        <li class="nav-item {% if actual == 'calendario' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'calendario' %}"><span>Calendario</span></a>
+        </li>
+        <li class="nav-item {% if actual == 'experiencia_lista' or actual == 'experiencia_actualizar' or actual == 'grupo_detalle' or actual == 'visitantes_registro' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'experiencia_lista' %}"><span>Mis tours asignados</span></a>
+        </li>
+        <li class="nav-item {% if actual == 'experiencia_crear' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'experiencia_crear' %}"><span>Nueva experiencia</span></a>
+        </li>
+    {% else %}
+        <div class="sidebar-heading">Explorar</div>
+        <li class="nav-item {% if actual == 'catalogo' or actual == 'experiencia_detalle' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'catalogo' %}"><span>Catálogo</span></a>
+        </li>
+        <li class="nav-item {% if actual == 'mis_reservas' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'mis_reservas' %}"><span>Mis reservas</span></a>
+        </li>
+    {% endif %}
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Cuenta</div>
+    <li class="nav-item {% if actual == 'perfil' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'perfil' %}"><span>Mi perfil</span></a>
+    </li>
+</ul>
+{% endwith %}

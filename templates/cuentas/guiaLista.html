@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block titulo %}Guías{% endblock %}
+{% block contenido %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Gestión de guías</h1>
+    <a href="{% url 'usuario_crear' %}?rol=guia" class="btn btn-danger btn-sm">Nuevo guía</a>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered datatable" width="100%">
+                <thead><tr><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Experiencias</th><th>Próximas</th><th>Cupos vendidos</th><th>Valoración</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                {% for g in guias %}
+                    <tr>
+                        <td>{{ g.username }}</td>
+                        <td>{{ g.get_full_name }}</td>
+                        <td>{{ g.email }}</td>
+                        <td>{{ g.perfil.telefono|default:"-" }}</td>
+                        <td>{{ g.total_experiencias }}</td>
+                        <td>{{ g.proximas }}</td>
+                        <td>{{ g.total_cupos }}</td>
+                        <td>{% if g.promedio %}{{ g.promedio }} / 5{% else %}-{% endif %}</td>
+                        <td>{% if g.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                        <td>
+                            <a href="{% url 'usuario_actualizar' g.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{% url 'usuario_borrar' g.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

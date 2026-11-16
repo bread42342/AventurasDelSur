@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block titulo %}Panel{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">Hola, {{ user.get_full_name|default:user.username }}</h1>
+<div class="row">
+{% if user.rol == 'admin' %}
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Usuarios</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_usuarios }}</div><small>{{ total_guias }} guías · {{ total_turistas }} turistas</small></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Categorías</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_categorias }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Experiencias</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_experiencias }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Reservas</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_reservas }}</div><small>{{ reservas_pendientes }} pendientes de pago</small></div></div></div>
+{% elif user.rol == 'guia' %}
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Mis experiencias</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_experiencias }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Activas</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ experiencias_activas }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Inscritos</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_inscritos }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pagos pendientes</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ inscritos_pendientes }}</div></div></div></div>
+{% else %}
+    <div class="col-xl-4 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Mis reservas</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_reservas }}</div></div></div></div>
+    <div class="col-xl-4 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pendientes de pago</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ reservas_pendientes }}</div></div></div></div>
+    <div class="col-xl-4 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Confirmadas</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ reservas_confirmadas }}</div></div></div></div>
+{% endif %}
+</div>
+{% if user.rol == 'turista' %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Vistas recientemente</h6></div>
+    <div class="card-body">
+        {% for e in vistas_recientes %}
+            <a href="{% url 'experiencia_detalle' e.pk %}" class="btn btn-outline-warning btn-sm mr-2 mb-2">{{ e.titulo }}</a>
+        {% empty %}
+            <span class="text-gray-700">Aún no has visto experiencias. <a href="{% url 'catalogo' %}">Explora el catálogo</a>.</span>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Próximas experiencias</h6></div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%">
+                <thead><tr><th>Título</th><th>Categoría</th><th>Fecha</th><th>Cupo</th></tr></thead>
+                <tbody>
+                {% for e in proximas %}
+                    <tr><td>{{ e.titulo }}</td><td>{{ e.categoria }}</td><td>{{ e.fecha_hora|date:"d/m/Y H:i" }}</td><td>{{ e.inscritos }} / {{ e.cupo_maximo }}</td></tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-center">Sin experiencias próximas.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

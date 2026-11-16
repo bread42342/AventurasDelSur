@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block titulo %}Reportes globales{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">Reportes globales</h1>
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Ingresos confirmados</div><div class="h5 mb-0 font-weight-bold text-gray-800">${{ ingresos_confirmados }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ingresos pendientes</div><div class="h5 mb-0 font-weight-bold text-gray-800">${{ ingresos_pendientes }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Cupos reservados</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_cupos }}</div><small>{{ total_reservas }} reservas · {{ total_asistentes }} visitantes presentes</small></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Valoración promedio</div><div class="h5 mb-0 font-weight-bold text-gray-800">{% if promedio_general %}{{ promedio_general|floatformat:1 }} / 5{% else %}-{% endif %}</div><small>{{ total_valoraciones }} valoraciones</small></div></div></div>
+</div>
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Usuarios</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_usuarios }}</div><small>{{ total_guias }} guías · {{ total_turistas }} turistas</small></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Experiencias</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_experiencias }}</div></div></div></div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Resumen por categoría</h6></div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered datatable" width="100%">
+                <thead><tr><th>Categoría</th><th>Experiencias</th><th>Cupos reservados</th><th>Ingresos confirmados</th></tr></thead>
+                <tbody>
+                {% for f in por_categoria %}
+                    <tr><td>{{ f.categoria.nombre }}</td><td>{{ f.experiencias }}</td><td>{{ f.cupos }}</td><td>${{ f.ingresos }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Detalle por experiencia</h6></div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered datatable" width="100%">
+                <thead><tr><th>Experiencia</th><th>Guía</th><th>Estado</th><th>Cupos</th><th>Ocupación</th><th>Presentes</th><th>Ingresos</th><th>Valoración</th></tr></thead>
+                <tbody>
+                {% for f in por_experiencia %}
+                    <tr>
+                        <td>{{ f.experiencia.titulo }}</td>
+                        <td>{{ f.experiencia.creador.username|default:"-" }}</td>
+                        <td>{{ f.experiencia.get_estado_display }}</td>
+                        <td>{{ f.cupos }} / {{ f.experiencia.cupo_maximo }}</td>
+                        <td>{{ f.ocupacion }}%</td>
+                        <td>{{ f.asistentes }}</td>
+                        <td>${{ f.ingresos }}</td>
+                        <td>{% if f.promedio %}{{ f.promedio }} / 5{% else %}-{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

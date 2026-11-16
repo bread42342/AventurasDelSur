@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block titulo %}Eliminar reserva{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">Eliminar reserva</h1>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <p>¿Seguro que deseas eliminar la reserva de <strong>{{ object.usuario.get_full_name|default:object.usuario.username }}</strong> en <strong>{{ object.experiencia.titulo }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="{% url 'inscripcion_lista' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

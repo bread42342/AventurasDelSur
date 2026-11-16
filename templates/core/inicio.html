@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Aventuras del Sur</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/aventuras.css' %}" rel="stylesheet">
+</head>
+<body class="bg-white">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary shadow">
+        <div class="container">
+            <a class="navbar-brand font-weight-bold" href="{% url 'inicio' %}">
+                Aventuras del Sur
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menuPublico">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menuPublico">
+                <ul class="navbar-nav ml-auto align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}#nosotros">Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}#actividades">Actividades</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}#proximas">Próximas salidas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inicio' %}#contacto">Contacto</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item ml-lg-3"><a class="btn btn-light btn-sm font-weight-bold" href="{% url 'panel' %}">Ir a mi panel</a></li>
+                    {% else %}
+                        <li class="nav-item ml-lg-3"><a class="btn btn-light btn-sm font-weight-bold" href="{% url 'login' %}">Ingresar</a></li>
+                        <li class="nav-item ml-lg-2"><a class="btn btn-outline-light btn-sm font-weight-bold" href="{% url 'registro' %}">Crear cuenta</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="hero-andes text-white py-5">
+        <div class="container py-5 text-center">
+            <h1 class="display-4 font-weight-bold">Aventuras del Sur</h1>
+            <p class="lead">Trekking, canopy, kayak y observación de aves en los volcanes, lagos y bosques del sur de Chile.</p>
+            <a href="{% url 'registro' %}" class="btn btn-light btn-lg font-weight-bold mr-2">Crear cuenta</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg font-weight-bold">Ingresar</a>
+        </div>
+    </header>
+    <section class="py-5" id="nosotros">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <h2 class="text-primary font-weight-bold">Quiénes somos</h2>
+                    <p class="text-gray-800">Somos un ecoparque familiar dedicado a la conservación del bosque nativo del sur de Chile. Ofrecemos experiencias guiadas que combinan aventura, educación ambiental y respeto por la naturaleza.</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="text-primary font-weight-bold">Misión</h5>
+                    <p class="text-gray-800">Acercar a las personas a la naturaleza de forma segura y sustentable.</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="text-primary font-weight-bold">Visión</h5>
+                    <p class="text-gray-800">Ser la reserva de turismo aventura referente de la región.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-light" id="actividades">
+        <div class="container">
+            <h2 class="text-primary font-weight-bold text-center mb-4">Nuestras actividades</h2>
+            <div class="row">
+                {% for categoria in categorias %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-left-primary shadow h-100">
+                            <div class="card-body">
+                                <h5 class="font-weight-bold text-gray-800">{{ categoria.nombre }}</h5>
+                                <p class="mb-0 text-gray-700">{{ categoria.descripcion|default:"Vive la experiencia con nuestros guías." }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-gray-700">Pronto publicaremos nuestras actividades.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section class="py-5" id="proximas">
+        <div class="container">
+            <h2 class="text-primary font-weight-bold text-center mb-4">Próximas salidas</h2>
+            <div class="row">
+                {% for experiencia in destacadas %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body">
+                                <span class="badge badge-primary mb-2">{{ experiencia.categoria.nombre }}</span>
+                                <h5 class="font-weight-bold text-gray-800">{{ experiencia.titulo }}</h5>
+                                <p class="text-gray-700 small">{{ experiencia.descripcion|truncatechars:90 }}</p>
+                                <p class="mb-0 small">Fecha: {{ experiencia.fecha_hora|date:"d/m/Y H:i" }}</p>
+                                <p class="mb-0 small">Precio: ${{ experiencia.precio }} por persona</p>
+                            </div>
+                            <div class="card-footer bg-white border-0">
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'experiencia_detalle' experiencia.pk %}" class="btn btn-primary btn-sm btn-block">Ver detalle</a>
+                                {% else %}
+                                    <a href="{% url 'login' %}" class="btn btn-primary btn-sm btn-block">Ingresa para reservar</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-gray-700">No hay salidas programadas por ahora.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-light" id="contacto">
+        <div class="container">
+            <h2 class="text-primary font-weight-bold text-center mb-4">Contacto e información</h2>
+            <div class="row text-center">
+                <div class="col-md-3 mb-3"><p class="mb-0 font-weight-bold text-primary">Dirección</p><p class="mb-0 text-gray-800">{{ configuracion.direccion|default:"-" }}</p></div>
+                <div class="col-md-3 mb-3"><p class="mb-0 font-weight-bold text-primary">Teléfono</p><p class="mb-0 text-gray-800">{{ configuracion.telefono|default:"-" }}</p></div>
+                <div class="col-md-3 mb-3"><p class="mb-0 font-weight-bold text-primary">Correo</p><p class="mb-0 text-gray-800">{{ configuracion.correo|default:"-" }}</p></div>
+                <div class="col-md-3 mb-3"><p class="mb-0 font-weight-bold text-primary">Horario</p><p class="mb-0 text-gray-800">{{ configuracion.horario_apertura|time:"H:i" }} a {{ configuracion.horario_cierre|time:"H:i" }}</p></div>
+            </div>
+            {% if configuracion.politica_cancelacion %}<p class="text-center text-gray-700 small mt-3 mb-0">{{ configuracion.politica_cancelacion }}</p>{% endif %}
+        </div>
+    </section>
+    <footer class="bg-gradient-dark text-white-50 text-center py-4">
+        <small>Ecoparque y Reserva Natural "Aventuras del Sur" &copy; {% now "Y" %}</small>
+    </footer>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

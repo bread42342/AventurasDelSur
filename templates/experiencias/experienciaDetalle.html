@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ experiencia.titulo }}{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">{{ experiencia.titulo }}</h1>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <span class="badge badge-primary mb-3">{{ experiencia.categoria }}</span>
+                <p class="text-gray-800">{{ experiencia.descripcion|linebreaksbr }}</p>
+                <ul class="list-unstyled mb-4">
+                    <li>Fecha: {{ experiencia.fecha_hora|date:"d/m/Y H:i" }}</li>
+                    <li>Precio: ${{ experiencia.precio }} por persona</li>
+                    <li>Cupos disponibles: {{ experiencia.cupos_disponibles }} de {{ experiencia.cupo_maximo }}</li>
+                    <li>Estado de la ruta: {{ experiencia.get_estado_display }}</li>
+                    {% if experiencia.creador %}<li>Guía: {{ experiencia.creador.get_full_name|default:experiencia.creador.username }}</li>{% endif %}
+                </ul>
+                {% if user.rol == 'turista' %}
+                    {% if reserva %}
+                        <div class="alert alert-success">Ya tienes una reserva de {{ reserva.cantidad }} cupo{{ reserva.cantidad|pluralize }} por ${{ reserva.total }} ({{ reserva.get_estado_pago_display }}).</div>
+                        <a href="{% url 'mis_reservas' %}" class="btn btn-primary">{% if reserva.estado_pago == 'pendiente' %}Ver mis reservas y pagar{% else %}Ver mis reservas{% endif %}</a>
+                    {% elif experiencia.estado != 'programada' %}
+                        <div class="alert alert-secondary">Esta ruta está {{ experiencia.get_estado_display|lower }} y no admite reservas.</div>
+                    {% elif experiencia.ya_paso %}
+                        <div class="alert alert-secondary">Esta experiencia ya se realizó.</div>
+                    {% elif experiencia.cupos_disponibles <= 0 %}
+                        <div class="alert alert-danger">No quedan cupos.</div>
+                    {% else %}
+                        <form method="post" action="{% url 'experiencia_reservar' experiencia.pk %}">
+                            {% csrf_token %}
+                            <div class="form-group" style="max-width: 220px;">
+                                <label for="cantidad" class="small font-weight-bold text-gray-700">Cantidad de cupos</label>
+                                <input type="number" name="cantidad" id="cantidad" class="form-control" value="1" min="1" max="{{ experiencia.cupos_disponibles }}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Reservar</button>
+                        </form>
+                    {% endif %}
+                    <a href="{% url 'catalogo' %}" class="btn btn-link">Volver al catálogo</a>
+                {% else %}
+                    <a href="{% url 'experiencia_lista' %}" class="btn btn-secondary">Volver</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary">Valoraciones{% if promedio %} · promedio {{ promedio|floatformat:1 }} / 5{% endif %}</h6></div>
+            <div class="card-body">
+                {% for v in valoraciones %}
+                    <p class="mb-2"><strong>{{ v.usuario.get_full_name|default:v.usuario.username }}</strong> · {{ v.puntaje }} / 5</p>
+                {% empty %}
+                    <span class="text-gray-700">Esta experiencia aún no tiene valoraciones.</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

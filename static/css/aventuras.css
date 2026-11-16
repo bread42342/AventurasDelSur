@@ -1,0 +1,25 @@
+:root {
+    --andes-900: #0f2a4a;
+    --andes-700: #1d4e89;
+    --andes-500: #2f6fb5;
+    --andes-100: #e8f0f9;
+}
+a { color: var(--andes-700); }
+a:hover { color: var(--andes-900); }
+.text-primary { color: var(--andes-700) !important; }
+.border-left-primary { border-left: .25rem solid var(--andes-700) !important; }
+.bg-gradient-primary {
+    background-color: var(--andes-700);
+    background-image: none;
+}
+.btn-primary { background-color: var(--andes-700); border-color: var(--andes-700); }
+.btn-primary:hover, .btn-primary:focus { background-color: var(--andes-900); border-color: var(--andes-900); }
+.btn-outline-primary { color: var(--andes-700); border-color: var(--andes-700); }
+.btn-outline-primary:hover { background-color: var(--andes-700); border-color: var(--andes-700); }
+.badge-primary { background-color: var(--andes-700); }
+.bg-light { background-color: var(--andes-100) !important; }
+.hero-andes {
+    background-image: linear-gradient(rgba(15, 42, 74, .55), rgba(15, 42, 74, .75)), url('../img/andes.jpg');
+    background-size: cover;
+    background-position: center;
+}

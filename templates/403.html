@@ -1,0 +1,9 @@
+{% extends 'baseLogin.html' %}
+{% block titulo %}Acceso denegado{% endblock %}
+{% block contenido %}
+<div class="text-center">
+    <div class="display-3 text-danger font-weight-bold">403</div>
+    <p class="lead text-gray-800">No tienes permiso para ver esta página.</p>
+    <a href="{% url 'inicio' %}" class="btn btn-primary">Volver al inicio</a>
+</div>
+{% endblock %}

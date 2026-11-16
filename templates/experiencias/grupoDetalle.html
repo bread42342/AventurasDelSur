@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block titulo %}Detalle del grupo{% endblock %}
+{% block contenido %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Detalle del grupo: {{ experiencia.titulo }}</h1>
+    <a href="{% url 'experiencia_lista' %}" class="btn btn-secondary btn-sm">Volver</a>
+</div>
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Fecha</div><div class="h6 mb-0 font-weight-bold text-gray-800">{{ experiencia.fecha_hora|date:"d/m/Y H:i" }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Cupos reservados</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ cupos_reservados }} / {{ experiencia.cupo_maximo }}</div><small>{{ confirmados }} con pago confirmado</small></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Visitantes presentes</div><div class="h5 mb-0 font-weight-bold text-gray-800">{{ asistentes }}</div></div></div></div>
+    <div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-info shadow h-100 py-2"><div class="card-body"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">Valoración</div><div class="h5 mb-0 font-weight-bold text-gray-800">{% if experiencia.promedio_valoracion %}{{ experiencia.promedio_valoracion|floatformat:1 }} / 5{% else %}-{% endif %}</div></div></div></div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Estado de la ruta: {{ experiencia.get_estado_display }}</h6>
+        {% if estados %}
+        <form method="post" action="{% url 'ruta_estado' experiencia.pk %}" class="form-inline">
+            {% csrf_token %}
+            <select name="estado" class="form-control form-control-sm mr-2">
+                {% for valor, etiqueta in estados %}
+                    <option value="{{ valor }}">{{ etiqueta }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Cambiar estado</button>
+        </form>
+        {% else %}
+        <span class="text-gray-700 small">La ruta finalizó y su estado ya no se puede cambiar.</span>
+        {% endif %}
+    </div>
+    {% if experiencia.estado == 'programada' and not experiencia.ya_paso %}
+    <div class="card-body py-2"><small class="text-gray-700">Podrás iniciar o finalizar la ruta cuando llegue la fecha y hora de la salida.</small></div>
+    {% endif %}
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Integrantes del grupo</h6>
+        <a href="{% url 'visitantes_registro' experiencia.pk %}" class="btn btn-success btn-sm">Registrar visitantes</a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered datatable" width="100%">
+                <thead><tr><th>Turista</th><th>Teléfono</th><th>Cupos</th><th>Presentes</th><th>Estado de pago</th><th>Valoración</th></tr></thead>
+                <tbody>
+                {% for i in inscripciones %}
+                    <tr>
+                        <td>{{ i.usuario.get_full_name|default:i.usuario.username }}</td>
+                        <td>{{ i.usuario.perfil.telefono|default:"-" }}</td>
+                        <td>{{ i.cantidad }}</td>
+                        <td>{{ i.asistentes }}</td>
+                        <td><span class="badge badge-{% if i.estado_pago == 'confirmado' %}success{% else %}warning{% endif %}">{{ i.get_estado_pago_display }}</span></td>
+                        <td>{% if i.puntaje %}{{ i.puntaje }} / 5{% else %}-{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

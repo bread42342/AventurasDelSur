@@ -1,0 +1,13 @@
+{% extends 'baseLogin.html' %}
+{% block titulo %}Ingresar | Aventuras del Sur{% endblock %}
+{% block contenido %}
+<h1 class="h4 text-gray-900 text-center mb-4">Iniciar sesión</h1>
+<form method="post">
+    {% csrf_token %}
+    {% include 'parciales/camposFormulario.html' %}
+    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+</form>
+<hr>
+<div class="text-center small"><a href="{% url 'registro' %}">¿No tienes cuenta? Regístrate</a></div>
+<div class="text-center small mt-2"><a href="{% url 'inicio' %}">Volver al inicio</a></div>
+{% endblock %}

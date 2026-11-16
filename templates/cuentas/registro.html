@@ -1,0 +1,12 @@
+{% extends 'baseLogin.html' %}
+{% block titulo %}Crear cuenta | Aventuras del Sur{% endblock %}
+{% block contenido %}
+<h1 class="h4 text-gray-900 text-center mb-4">Crear cuenta de turista</h1>
+<form method="post">
+    {% csrf_token %}
+    {% include 'parciales/camposFormulario.html' %}
+    <button type="submit" class="btn btn-primary btn-block">Registrarme</button>
+</form>
+<hr>
+<div class="text-center small"><a href="{% url 'login' %}">¿Ya tienes cuenta? Ingresa</a></div>
+{% endblock %}

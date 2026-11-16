@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block titulo %}Eliminar categoría{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">Eliminar categoría</h1>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+        <p>¿Seguro que deseas eliminar la categoría <strong>{{ object.nombre }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="{% url 'categoria_lista' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

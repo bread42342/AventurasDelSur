@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block titulo %}Registrar visitantes{% endblock %}
+{% block contenido %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Registrar visitantes: {{ experiencia.titulo }}</h1>
+    <a href="{% url 'grupo_detalle' experiencia.pk %}" class="btn btn-secondary btn-sm">Volver al grupo</a>
+</div>
+{% if not puede_registrar %}
+    <div class="alert alert-warning">
+        {% if experiencia.estado == 'suspendida' %}La ruta está suspendida, por lo que no se pueden registrar visitantes.
+        {% elif experiencia.ya_paso %}Ya llegó la hora de la salida. Cambia la ruta a En curso desde el detalle del grupo para registrar visitantes.
+        {% else %}Podrás registrar visitantes cuando llegue la fecha y hora de la salida y la ruta esté En curso.{% endif %}
+    </div>
+{% endif %}
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%">
+                    <thead><tr><th>Turista</th><th>Cupos reservados</th><th>Visitantes presentes</th></tr></thead>
+                    <tbody>
+                    {% for i in inscripciones %}
+                        <tr>
+                            <td>{{ i.usuario.get_full_name|default:i.usuario.username }}</td>
+                            <td>{{ i.cantidad }}</td>
+                            <td style="width: 200px;"><input type="number" name="asistentes_{{ i.pk }}" class="form-control" min="0" max="{{ i.cantidad }}" value="{{ i.asistentes }}" {% if not puede_registrar %}disabled{% endif %}></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3" class="text-center">Esta experiencia no tiene reservas.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if puede_registrar and inscripciones %}<button type="submit" class="btn btn-success">Guardar registro</button>{% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

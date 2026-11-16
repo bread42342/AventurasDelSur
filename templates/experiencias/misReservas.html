@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block titulo %}Mis reservas{% endblock %}
+{% block contenido %}
+<h1 class="h3 mb-4 text-gray-800">Mis reservas</h1>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered datatable" width="100%">
+                <thead><tr><th>Experiencia</th><th>Categoría</th><th>Fecha</th><th>Precio por persona</th><th>Cupos</th><th>Total</th><th>Ruta</th><th>Estado de pago</th><th>Valoración</th><th>Acciones</th></tr></thead>
+                <tbody>
+                {% for r in reservas %}
+                    <tr>
+                        <td>{{ r.experiencia.titulo }}</td>
+                        <td>{{ r.experiencia.categoria }}</td>
+                        <td>{{ r.experiencia.fecha_hora|date:"d/m/Y H:i" }}</td>
+                        <td>${{ r.experiencia.precio }}</td>
+                        <td>{{ r.cantidad }}</td>
+                        <td>${{ r.total }}</td>
+                        <td>{{ r.experiencia.get_estado_display }}</td>
+                        <td><span class="badge badge-{% if r.estado_pago == 'confirmado' %}success{% else %}warning{% endif %}">{{ r.get_estado_pago_display }}</span></td>
+                        <td>{% if r.puntaje %}{{ r.puntaje }} / 5{% else %}-{% endif %}</td>
+                        <td>
+                            <a href="{% url 'experiencia_detalle' r.experiencia.pk %}" class="btn btn-sm btn-info">Ver</a>
+                            {% if r.experiencia.estado == 'suspendida' %}
+                            <small class="text-danger d-block mb-1">Salida suspendida: contacta al administrador.</small>
+                            {% elif r.estado_pago == 'confirmado' and not r.puede_valorar %}
+                            <small class="text-gray-700 d-block mb-1">Podrás valorar cuando la ruta esté finalizada.</small>
+                            {% endif %}
+                            {% if r.puede_valorar %}
+                            <a href="{% url 'reserva_valorar' r.pk %}" class="btn btn-sm btn-warning">{% if r.puntaje %}Editar valoración{% else %}Valorar{% endif %}</a>
+                            {% endif %}
+                            {% if r.puede_pagar %}
+                            <form method="post" action="{% url 'reserva_pagar' r.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-primary">Pagar</button>
+                            </form>
+                            {% endif %}
+                            {% if r.estado_pago == 'pendiente' %}
+                            <form method="post" action="{% url 'reserva_cancelar' r.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger">Cancelar</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

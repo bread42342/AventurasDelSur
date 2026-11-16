@@ -1,0 +1,25 @@
+{% load static %}
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+    <button id="sidebarToggleTop" class="btn btn-link d-md-none mr-3">Menú</button>
+    <span class="d-none d-md-inline text-gray-600 small">
+        Sesión iniciada: {{ request.session.ingreso|default:"-" }}
+        &middot; Último acceso anterior: {{ request.session.ultimo_acceso|default:"-" }}
+    </span>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="#" id="menuUsuario" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-700 small">
+                    {{ user.get_full_name|default:user.username }}
+                    <span class="badge badge-{% if user.rol == 'admin' %}danger{% elif user.rol == 'guia' %}success{% else %}warning{% endif %}">{{ user.get_rol_display }}</span>
+                </span>
+                <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}" alt="Perfil">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="menuUsuario">
+                <a class="dropdown-item" href="{% url 'perfil' %}">Mi perfil</a>
+                <a class="dropdown-item" href="{% url 'inicio' %}">Página de inicio</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Cerrar sesión</a>
+            </div>
+        </li>
+    </ul>
+</nav>
